@@ -1,0 +1,6 @@
+[package]
+name = "xinarow-rs"
+version = "0.1.0"
+authors = ["Domonkos Suranyi <suranyi.domi@gmail.com>"]
+
+[dependencies]

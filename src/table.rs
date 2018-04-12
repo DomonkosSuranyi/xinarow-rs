@@ -32,4 +32,12 @@ mod test {
             }
         }
     }
+
+    #[test]
+    fn set() {
+        let mut table = Table::new((1,1));
+        assert_eq!(table.fields[0][0], None);
+        table.set((0,0), Field::X);
+        assert_eq!(table.fields[0][0], Some(Field::X));
+    }
 }

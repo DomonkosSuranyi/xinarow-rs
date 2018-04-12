@@ -16,6 +16,10 @@ impl Table {
     pub fn set(&mut self, pos: (usize,usize), field: Field) -> () {
         self.fields[pos.0][pos.1] = Some(field);
     }
+
+    pub fn row_len(&self) -> usize {
+        self.fields.len()
+    }
 }
 
 #[cfg(test)]

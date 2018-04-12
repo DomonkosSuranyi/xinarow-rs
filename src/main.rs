@@ -1,5 +1,5 @@
 pub mod table;
 
 fn main() {
-    println!("Hello, world!");
+    let mut table = table::Table::new((3,3));
 }

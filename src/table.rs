@@ -1,25 +1,64 @@
 pub struct Table {
-    fields: Vec<Vec<Option<Field>>>
+    fields: Vec<Vec<Field>>
 }
 
 #[derive(Clone, PartialEq, Debug)]
 pub enum Field {
     X,
     O,
+    Empty,
+}
+
+impl Field {
+    fn value(&self) -> &str {
+        match *self {
+            Field::X => "X",
+            Field::O => "O",
+            Field::Empty => " "
+        }
+    }
 }
 
 impl Table {
     pub fn new(size: (usize,usize)) -> Self {
-        Table { fields: vec![vec![None; size.1]; size.0] }
+        Table { fields: vec![vec![Field::Empty; size.1]; size.0] }
     }
 
     pub fn set(&mut self, pos: (usize,usize), field: Field) -> () {
-        self.fields[pos.0][pos.1] = Some(field);
+        self.fields[pos.0][pos.1] = field;
     }
 
     pub fn row_len(&self) -> usize {
         self.fields.len()
     }
+}
+
+use std::fmt;
+
+impl fmt::Display for Table {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let mut outp = "".to_owned();
+        add_line(self.fields.len(), &mut outp);
+        for row in 0..self.fields[0].len() {
+            outp.push_str("\n |");
+            for col in 0..self.fields.len() {
+                outp.push_str(" ");
+                outp.push_str(self.fields[col][row].value());
+            }
+            outp.push_str(" |");
+        }
+        outp.push_str("\n");
+        add_line(self.fields.len(), &mut outp);
+        write!(f, "{}", outp)
+    }
+}
+
+fn add_line(length: usize, s: &mut String) {
+    s.push_str(" +");
+    for col in 0..length {
+        s.push_str("--");
+    }
+    s.push_str("-+");
 }
 
 #[cfg(test)]

@@ -34,13 +34,22 @@ impl Table {
 }
 
 use std::fmt;
+const A_ASCII: u8  = 97;
 
 impl fmt::Display for Table {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let mut outp = "".to_owned();
+        outp.push_str("   ");
+        for col in 0..self.fields.len() {
+            outp.push(' ');
+            outp.push((A_ASCII+(col as u8)) as char);
+        }
+        outp.push('\n');
         add_line(self.fields.len(), &mut outp);
         for row in 0..self.fields[0].len() {
-            outp.push_str("\n |");
+            outp.push('\n');
+            outp.push_str(&row.to_string());
+            outp.push_str(" |");
             for col in 0..self.fields.len() {
                 outp.push_str(" ");
                 outp.push_str(self.fields[col][row].value());
@@ -54,7 +63,7 @@ impl fmt::Display for Table {
 }
 
 fn add_line(length: usize, s: &mut String) {
-    s.push_str(" +");
+    s.push_str("  +");
     for col in 0..length {
         s.push_str("--");
     }

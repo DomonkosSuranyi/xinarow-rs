@@ -28,8 +28,12 @@ impl Table {
         self.fields[pos.0][pos.1] = field;
     }
 
-    pub fn row_len(&self) -> usize {
+    pub fn width(&self) -> usize {
         self.fields.len()
+    }
+
+    pub fn height(&self) -> usize {
+        if self.width() == 0 { 0 } else { self.fields[0].len() }
     }
 }
 
@@ -39,16 +43,23 @@ const A_ASCII: u8  = 97;
 impl fmt::Display for Table {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let mut outp = "".to_owned();
-        outp.push_str("   ");
+        let char_len: usize = (((self.height()-1) as f64).log10() + 1.0) as usize;
+        for _space in 0..char_len+2 {
+            outp.push(' ');
+        }
         for col in 0..self.fields.len() {
             outp.push(' ');
             outp.push((A_ASCII+(col as u8)) as char);
         }
         outp.push('\n');
-        add_line(self.fields.len(), &mut outp);
+        add_line(self.fields.len(), &mut outp, char_len+1);
         for row in 0..self.fields[0].len() {
             outp.push('\n');
-            outp.push_str(&row.to_string());
+            let index_string = &row.to_string();
+            outp.push_str(index_string);
+            for _space in 0..(char_len - index_string.len()) {
+                outp.push(' ');
+            }
             outp.push_str(" |");
             for col in 0..self.fields.len() {
                 outp.push_str(" ");
@@ -57,14 +68,17 @@ impl fmt::Display for Table {
             outp.push_str(" |");
         }
         outp.push_str("\n");
-        add_line(self.fields.len(), &mut outp);
+        add_line(self.fields.len(), &mut outp, char_len+1);
         write!(f, "{}", outp)
     }
 }
 
-fn add_line(length: usize, s: &mut String) {
-    s.push_str("  +");
-    for col in 0..length {
+fn add_line(length: usize, s: &mut String, indent: usize) {
+    for _space in 0..indent {
+        s.push(' ');
+    }
+    s.push('+');
+    for _col in 0..length {
         s.push_str("--");
     }
     s.push_str("-+");
